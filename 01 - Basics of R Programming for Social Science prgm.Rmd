@@ -1,0 +1,853 @@
+---
+title: "Basics of R Programming.RMD"
+updated: April 23, 2022
+output: pdf_document
+---
+
+```{r}
+library(rmarkdown)
+library(knitr)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#see the guide on information on RStudio four window panel here is an article on tips/tricks on using RStudio
+#https://www.dataquest.io/blog/rstudio-tips-tricks-shortcuts/
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+#manuals, references --------
+```{r}
+help.start()
+```
+
+#help for a certain function use ?
+```{r}
+?summary
+?mean
+```
+
+#search site
+```{r}
+RSiteSearch("character") #site search for references citing character
+     
+```
+
+#know the name of a command
+```{r}
+help.search("select")
+```
+
+#help on an argument
+```{r}
+args("matrix") #arguments to code a matrix
+```
+
+#help on operators
+```{r}
+help("<-") #assignment operator
+help("!") #the logical "not"
+```
+
+#to view an example
+```{r}
+example("matrix")
+```
+
+#Get and set working directory --------
+```{r}
+getwd() #default working directory
+```
+
+#getwd() #default working directory
+#"C:/Users/redbe/OneDrive/Documents/BeVera/Bevera-R-master"
+#setwd("~/BeVera/Bevera-R-master")
+
+#Use either 2: / (if using forward) or 2 \\ if using backslash
+```{r}
+setwd("C:\\Users\\redbe\\OneDrive\\Documents\\Bevera\\Bevera-R-master")
+
+setwd("~/Data") 
+getwd()
+#~ is a convenient shortcut to your home directory or documents directory (Windows)
+```
+#also set from "Session -> Set Working Directory"
+Use the knitr root.dir option in the setup chunk to change the working directory for notebook chunks.
+
+# Commands, Objects, and Functions -----------
+
+#most common form of assignment in the R community is the left arrow, "<-"
+#also a nice option is using the single equal sign, "="
+#and the operator <<- is generally used in global assignments
+
+#lets add the object x with value 5 in the work space
+```{r vars}
+x <- 5   #leftwards assignment operators
+y = 12   
+6 -> z   #rightward assignment operators
+```
+
+```{r}
+ls() #listing of objects and variables
+rm(x) #removing objects and variables
+```
+
+#assign value to multiple variables simultaneously
+```{r}
+a <- b <- 5
+```
+
+#sometimes necessary to assign variables usng assign() 
+```{r}
+assign("j", 4)
+```
+
+#Variable names can contain any combination of alphanumeric characters along with periods (.) and underscores (_). However, they cannot start with a number or an underscore.
+```{r}
+abc.def <-5
+```
+
+#ls() #listing of objects in workspace
+
+#variables may need to be removed. This is easily done using remove or its shortcut rm.
+rm(c) #deletes objects in workspace
+
+```{r}
+rm(j)
+```
+
+#using the function rm() frees up memory so that R can store more objects, although it does not necessarily free up memory for the operating system. To guarantee that, use gc(), which performs garbage collection, releasing unused memory to the operating system. R automatically does garbage collection periodically, so this function is not essential.
+
+#Data Types ---------
+
+There are numerous data types in R that store various kinds of data. The four main types of data most likely to be used are:
+numeric, 
+character (string), 
+Date/POSIXct (time-based) and 
+logical (TRUE/FALSE)
+
+The type of data contained in a variable is checked with the class function.
+```{r data types}
+x<-5
+class(x)
+```
+
+#Numeric data
+
+#numeric data is the most common type in R. The numeric data type handles integers and decimals, both positive and negative, and zero. A numeric value stored in a variable is automatically assumed to be numeric.
+```{r}
+is.numeric(x)  #tests whether a variable is numeric
+```
+
+#Another important numeric is the type integer. The integer is for whole numbers only, no decimals. To set an integer to a variable it is necessary to append the value with an L. 
+```{r integer}
+k <- 8L   #assign integer
+is.integer(k) #confirm data type
+
+class(k)
+typeof(k)
+```
+
+#R used as a calculator
+```{r}
+a <- 5.5
+b <- 3
+
+print ( a+b )     #addition
+print ( a-b )  	  #subtraction
+print ( a*b )     #multiplication
+print ( a/b )  	  #Division
+print ( a%%b )	  #Remainder
+print ( a%/%b )   #Quotient
+print ( a^b ) 	  #Power of
+```
+
+#Character data
+
+#The character (string) data type is very common in statistical analysis. R has two primary ways of handling character data: character and factor
+
+```{r}
+x <- "data"
+y <- factor("data")
+```
+
+#In the Global Environment, notice that x contains the word “data” encapsulated in quotes, while y has the word “data” including the second line of information about the levels of y. More discussion to come.
+
+#Characters are case sensitive, so “Data” is different from “data” or “DATA”. To find the length of a character (or numeric) use the nchar function. But this will not work for factor data.
+
+```{r length}
+nchar(x)
+nchar(y) #remember "y" is a factor
+```
+
+#Dealing with dates and times can be difficult. The most useful are Date and POSIXct. Date stores just a date while POSIXct stores a date and time. Both objects are actually represented as the number of days (Date) or seconds (POSIXct) since January 1, 1970.
+```{r}
+date1 <- as.Date("2000-02-02")
+date1
+
+date2 <- as.POSIXct("2000-02-02 18:04")
+date2
+```
+
+#Additional work date and time objects can be accomplished using packages (i.e. lubridate and chron)
+#functions (i.e. "as.xxxxx") does not only change the formatting of the object but also the underlying type.
+
+#Logical type
+
+#Logicals are a way of representing data that can be either TRUE or FALSE. Numerically, TRUE is the same as 1 and FALSE is the same as 0.
+
+```{r}
+m <- TRUE
+class(m)
+is.logical(m)
+```
+#'T' and 'F' shortcuts for TRUE and FALSE, respectively. Best practice is not to use them.
+#A logical can result from comparing two numbers, or characters.
+
+```{r}
+r<- 2+3i #complex
+class(r)
+```
+
+#Vectors -----------
+
+#A vector is a collection of elements, all of the same type. For instance, c(1, 3, 2, 1, 5) is a vector consisting of the numbers 1, 3, 2, 1, 5, in that order. Similarly, c(“R”, “Excel”, “SAS”, “Excel”) is a vector of the character elements, “R”, “Excel”, “SAS”, and “Excel”. A vector cannot be of mixed type.
+
+#Vectors play a crucial, and helpful, role in R. More than being simple containers, vectors in R are special in that R is a vectorized language. That means operations are applied to each element of the vector automatically, without the need to loop through the vector.
+
+#Vectors do not have a dimension, meaning there is no such thing as a column vector or row vector. These vectors are not like the mathematical vector, where there is a difference between row and column orientation.
+
+#Four ways to create a vector
+1. combine: c() - most common way to create a vector
+2. generates a sequence of consecutive numbers,integers, in either direction ":"
+3. sequence: seq()
+4. repetition: rep()
+
+```{r vector1}
+x <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+```
+
+# R this is a simple operation using just the multiplication operator (*).
+```{r}
+x*x
+```
+
+No loops are necessary. Addition, subtraction and division are just as easy. This also works for any number of operations.
+
+#Using a colon, :, (creates a vector of integers)
+```{r}
+vecd <- c(10:15)
+```
+
+#Vectors of the same length can be added
+```{r}
+c(1:5) + c(3,5,6,8,9)
+```
+
+#use the seq for sequence to create vectors
+```{r}
+vectorseq <-seq(from=2, to=20, by=2)
+vectorseq
+```
+
+```{r}
+vectorseq2 <-seq(0,1,length.out=11)
+vectorseq2
+```
+
+```{r}
+vectorrep <-rep(c(1,2,3,4), each=2) #creating a numeric vector with 'rep'
+vectorrep
+
+#another example:
+x <-c(1,2,3,4)
+x
+vectorrep <-rep(c(x), each=2) 
+#[1] 1 1 2 2 3 3 4 4 #a vector 1:4, each value is repeated twice
+```
+
+#creating a repeat vector
+```{r}
+x<-c(1,2,3,4)
+vectorrep <-rep(x,2)
+vectorrep
+```
+
+```{r}
+rep(c(7,8),times=2)
+rep(c(7,8),times=2, each=2)
+```
+
+```{r}
+rep("spades",2)
+rep(c("spades","clubs"), times=2, each=2) #replicating a character vector
+```
+
+#This works for all types of vectors whether they are numeric, logical, character...
+```{r}
+
+vectorchar1 <-c("a", "y", "r")
+vectorchar2 <-c(One="a", Two="y", Last="r") #character vector with a vector name
+typeof(vectorchar1)
+class(vectorchar2)
+length(vectorchar2)
+```
+
+#Doing arithmetic operations on vectors
+```{r}
+x<-(1:20)
+print(x)
+x+1
+```
+
+```{r}
+x<-rnorm(3)
+x
+y<-rnorm(3)
+y
+
+x*y
+```
+
+```{r}
+ #write two vectors of length 5 then add where each output value = 6
+
+
+```
+
+```{r}
+mean(1:20)  #stat operator using mean
+sd(1:20)    #stat operator using sd
+summary(1:20) #useful function
+quantile(1:20,.1) #using the quantile
+```
+
+```{r}
+vectornum <- c(1:20)
+summary(vectornum) 
+```
+#Use the summary function to obtain the five number summary. It quickly summarizes the values in a vector. The function can also be used with a dataframe.
+
+#Vector arithmetic statistical operations on continuous vectors (i.e. round(), digits(), ceiling(), floor(), x%%y)
+```{r}
+round(c(3.7232, 14.902), digits=1) #continuous vectors
+floor(c(2.6, 8.1))
+```
+
+#Vector arithmetic statistical operations on discrete vectors (i.e. unique(), table())
+```{r}
+y<-c(1,1,1,1,4,6,8) #discrete vectors
+unique(y)
+
+y<-c("1","1","1","1","4","6","8") #works on character values
+unique(y)
+
+y<-c("1","1","1","4","6","8","NA") #using as a string
+unique(y)
+#[1] "1" "4" "6" "8"
+
+y
+table(y) #table of counts
+table(y)/sum(table(y)) #table of percentages instead of counts
+```
+
+#Missing Data: NA vs NULL --------
+
+#R has two types of missing data, NA and NULL. While they are similar, they behave differently and that difference needs attention.
+
+#Sometimes data has missing values for any number of reasons. Statistical programs use various techniques to represent missing data such as a dash(-), a period (.) or even the number (999). R uses NA. NA will often be seen as just another element of a vector. is.na() tests each element of a vector for missingness.
+
+```{r}
+z <- c(1, 2, NA, 8, 3, NA, 3)
+(is.na(z))
+sum(is.na(z))
+```
+
+```{r}
+x <- c(0,2,4,7,23,NA,655,23)
+mean(x)
+sd(x)
+#is the NA value in your data being treated properly
+mean(x, na.rm = TRUE)
+sd(x,na.rm = TRUE)
+```
+
+#NULL is the absence of anything. It is not exactly missingness, it is nothingness. Functions can sometimes return NULL and their arguments can be NULL. An important difference between NA and NULL is that NULL is atomical and cannot exist within a vector. If used inside a vector, it simply disappears.
+
+```{r}
+z <- c(1, NULL, 3)
+length(z)
+z
+```
+#Even though it was entered into the vector z, it did not get stored in z. In fact, z is only two elements long. The test for a NULL value is is.null(). Since NULL cannot be a part of a vector, is.null is appropriately not vectorized.
+
+#Comparisons also work on vectors using relational operators.
+```{r}
+x <= 5
+```
+
+#applicable to type of logical, numeric or complex.
+#result is Boolean
+```{r}
+v<-c(2,3,3,5,6)
+w<-c(8,2,5,6,1)
+print(v>w)
+print(v==w)
+```
+
+```{r}
+z <- c(1,6,4,3,12,5)
+#logical operators
+(z > 2) & (z < 5) #Returns a vector of logical values for each item in vector z 
+#if both conditions are satisfied
+## [1] FALSE FALSE TRUE TRUE FALSE FALSE
+
+(z > -2) && (z < 50) #Tests if all elements in vector satisfy both conditions 
+#and returns a single logical value
+## [1] TRUE
+```
+
+#To test whether all the resulting elements are TRUE, use the "all" function. Similarly, the "any" function checks whether any element is TRUE.
+```{r}
+x <- 12:4
+y <- -2:6
+## Checking any and all
+any(x < y)
+all(x < y)
+```
+
+#Selecting vector elements
+
+#Accessing individual elements of a vector is done using square brackets ([ ]). The first element of x is retrieved by typing x[1], the first three elements by x[1:3] and nonconsecutive elements by x[c(2, 6)].
+
+```{r}
+x <- c(1:3) #1, 2, 3
+x[1] #1
+x[1:3] #1,2,3
+
+x[c(1,3)]  #1,3
+```
+
+```{r}
+vectorchar<-c("aa","bb","cc")
+vectorchar[3] #identify only ("cc") 
+vectorchar[c(2,3)]
+vectorchar[-1]#identify only ("bb","cc")
+```
+
+#See indexingvectors.R exercise
+
+#Factors --------
+
+#Factors are used to represent categorical data. Factors can be ordered or unordered and are an important class for statistical analysis and for plotting.
+
+```{r}
+factor_nums  = factor(c(1,0,1,0,0,0), levels=c(1,0),
+labels =c("yes","no"))
+factor_nums
+```
+
+#Nominal factor - In ordinary factors the order of the levels does not matter and one level is no different from another. 
+```{r}
+color_vector <-c("turq","red","green","ivory") #nominal cat to factor
+class(color_vector)
+factor_color <-factor(color_vector)
+factor_color
+
+#After printing out every element of color_vector, R also prints the levels of color_vector.
+
+#The levels of a factor are the unique values of that factor variable. Technically, R is giving each unique value of a factor a unique integer, tying it back to the character representation. This can be seen with as.numeric.
+
+#By default, R always sorts levels in alphabetical order. 
+as.numeric(factor_color)
+```
+
+#Ordinal factors
+
+#It is important to understand the order of a factor, such as when coding the times of day. Setting the ordered argument to TRUE creates an ordered factor with the order given in the levels argument.
+
+```{r}
+day_vector <- c("evening","midnight","morning","midday","afternoon","evening")
+factor_day <-factor(day_vector, order=TRUE, levels=c("morning","midday","afternoon","evening","midnight"))
+
+print(factor_day)
+summary(factor_day)
+```
+
+#Factors can drastically reduce the size of the variable because they are storing only the unique values.
+
+
+#Lists ----------
+
+#A container is needed to hold arbitrary objects of either the same type or varying types. R accomplishes this through lists. They store any number of items of any type. A list can contain all numerics or characters or a mix of the two or data.frames or, recursively, other lists.
+```{r}
+x<- list(1:5, "d", c(TRUE,FALSE, TRUE), c(1,2,4,5))
+str(x) #using list() each argument to the function becomes an element of the list.
+```
+
+lists can have names. Each element has a unique name that can be either viewed or assigned using names.
+
+```{r}
+empID<-c(1,2,3,4) #vector of numeric
+empName<-c("Aur","San","Elison","Evette") #vector of character
+numberofEmp=4 #vector of value 4
+class(numberofEmp)
+empList=list(empID, empName, numberofEmp)
+print(empList)
+```
+
+#To access an individual element of a list, use double square brackets, specifying either the element number or name. Note that this allows access to only one element at a time. Once an element is accessed it can be treated as if that actual element is being used, allowing nested indexing of elements.
+```{r}
+empList[2] #slicing my list for the second vector
+```
+
+#Using the [[]], you can ID the position of the element, in th# double and single bracket to slice the list
+```{r}
+empList[[2]]
+empList[[2]][2]
+```
+
+
+#Matrices ---------
+
+#A very common mathematical structure that is essential to statistics is a matrix. This is similar to a data.frame in that, it is rectangular with rows and columns except that every single element, regardless of column, must be the same type, most commonly all numerics. They also act similarly to vectors with element-by-element addition, multiplication, subtraction, division, and equality.
+```{r}
+#[row,column]
+#create a matrix of 4,3 dimension
+#matrix function
+matrix_a <- matrix(c(1:12),nrow=4,byrow=TRUE)
+matrix_a
+dim(matrix_a) #dimension
+
+#can change the shape of the matrix by using nrow (i.e. nrow=3)
+```
+
+#Matrices can also have row and column names.
+```{r}
+rownames(matrix_a) <-c("row1","row2","row3","row4") #labels for the rows
+colnames(matrix_a) <-c("col1","col2","col3") #labels for the columns
+matrix_a
+```
+
+#alternate script to above two chunck
+```{r} 
+rows<-c("row1","row2","row3","row4") #labels for the rows
+cols <-c("col1","col2","col3") #labels for the columns
+matrix_a <- matrix(c(1:12),nrow=4,byrow=TRUE,dimnames = list(rows,cols))
+matrix_a
+```
+
+#Matrix multiplication is a commonly used operation in mathematics, requiring the number of columns of the left-hand matrix to be the same as the number of rows of the right-hand matrix. 
+
+#cbind for binding a column
+#rbind for binding a row
+```{r}
+matrix_a1 <-cbind(matrix_a, col4=c(13:16))
+matrix_a1
+
+#ibrary(labelVector)
+#x<-c(13:16)
+#x<-set_label(x,"col4")
+#get_label(x)
+```
+
+#Slice a matrix [row,column]
+```{r}
+matrix_a1[1,2] #first row and second column
+
+matrix_a1[1:3,2:3] #rows 1-3, columns 2-3
+
+matrix_a1[,1] #first column, leave the row blank and fill in column
+
+matrix_a1[1,] #first row of the matrix
+```
+
+#creating the matrix A
+```{r}
+A <- matrix(c(2,4,3,1,5,7),nrow=2,ncol=3,byrow=TRUE)
+A
+dim(A)
+```
+
+```{r}
+A[2,3]    #choosing the element 2 row, 3 column
+B<-t(A)   # transpose
+B
+c(B)      # c function, deconstructed: combines all column vectors into one
+```
+#The effect when transposing a matrix and multiplying matrices. Transposing naturally flips the row and column names. Matrix multiplication keeps the row names from the left matrix and the column names from the right matrix.
+
+
+#Data Frames----------
+
+#one of the most useful features of R is the data.frame. data.frame is just like an Excel spreadsheet in that it has columns and rows.
+Each column is a variable and each row is an observation. In terms of how R organizes data.frames, each column is actually a vector, each of which has the same length. That is very important because it lets each column hold different types of data. This also implies that within a column each element must be of the same type, just like with vectors.
+
+```{r}
+df<- data.frame(x=1:3,y=c("a","b","c"))
+typeof(df)
+class(df)
+is.data.frame(df)
+```
+
+#create a data frame using previous script of baby information
+```{r}
+print(baby.names)
+
+df<- data.frame(baby.names,baby.ages2,baby.city,baby.eyecolor,baby.weight)
+print(df)
+is.data.frame(df)
+```
+
+#access information from my dataframe
+#data.frames are complex objects with many attributes. The most frequently checked attributes are the number of rows and columns. Of course, there are functions to do this for us: nrow and ncol.
+```{r}
+ncol(df)
+nrow(df)
+dim(df)
+```
+
+#empList information during the List module
+```{r}
+Name = c("Auriel", "Ray", "Asia")
+Type = c("O+", "B-", "A-")
+Age = c(36,23,62)
+df <- data.frame(Name,Type,Age)
+print(df)
+is.data.frame(df)
+```
+
+#add new column
+```{r}
+df$State <- c("KY","PA","CA")
+df
+```
+
+#add new row
+```{r}
+df <-rbind(df,c("George","O-",33,"NY"))
+str(df)
+df$Age <- as.numeric(df$Age)
+```
+
+#accessing the dataframe as a matrix
+```{r}
+df$State<-NULL
+df
+```
+
+#delete the first row
+```{r}
+df<- df[-1,]
+df
+```
+
+#accessing the dataframe as a matrix [row,column]
+```{r}
+df
+df[1,1] #Ray
+df[1,2] #B-
+```
+
+#access elements like a list [[]].
+#[[vector]][element]
+```{r}
+df
+df[[1]][1]
+
+```
+
+```{r}
+str(df) #structure of the df
+View(df)
+head(df) 
+tail(df)
+summary(df)
+```
+
+```{r}
+
+summary(df$Age)
+```
+
+
+#Checking the column names of a data.frame is as simple as using the names function. 
+```{r}
+names(df)
+```
+#check and assign the row names of a data.frame using rownames().
+
+#the head function prints out only the first six rows.
+```{r}
+head(df)
+```
+
+#Packages ----------
+
+```{r}
+search() #packages currently loaded into global environment
+```
+#The advantage of using an R studio is it is GUI (Graphical User interface). 
+#We can choose the packages to install and the source of them.
+#tools -> Install packages.
+#function to load the packages
+#Go to Packages tab, check the white box to load the package
+```{r}
+#install.packages(" ")
+```
+#We can install several packages at a time by specifying the package names under a character vector.
+#install.packages(c("package 1","package 2","package 3"))
+#install.packages(c("readxl","haven","xml"))
+
+#Packages should be loaded at the top of the script, so its easy to see which ones the example needs. Use the library function to load the data in the session.
+```{r}
+#install.packages(c("readxl","haven","XML"))
+library(readxl)
+```
+ 
+#check installed packages
+```{r}
+installed.packages()
+```
+#This is a good time to check that your are using the latest version of each package.
+
+#List all packages where an update is available
+```{r}
+old.packages()
+```
+
+#Update all available packages
+```{r}
+#update.packages()
+```
+#update, without prompts for permission/clarification
+#update.packages(ask = FALSE)
+
+#update only a specific package use install.packages()
+```{}
+#install.packages("e1071")
+```
+
+#Importing a file using the default file.choose() to find the file on your machine.
+```{r}
+cncr <-read.csv(file.choose())
+```
+
+#R does not like \, it likes / but you can use \\=/
+```{r}
+#using the full file location and file name as the input into function
+cncr2 <-read.csv("C:/Users/redbe/OneDrive/Documents/Data/cancer_survival.csv") #this is the file location of the instructor. Insert your file location from your machine
+
+getwd() #reminder where the working directory is set
+cncr3<-read.csv("~/Data/cancer_survival.csv") #using '~' default machine root directory
+#this is the file location of the instructor. Insert your file location from your machine
+```
+
+```{r}
+setwd("C:\\Users\\redbe\\OneDrive\\Documents\\Data")
+cncr4<-read.csv("cancer_survival.csv") #session is pointing to working directory location
+#this is the file location of the instructor. Insert your file location from your machine
+```
+
+
+#Since each column of the data.frame is an individual vector, it can be accessed individually and each has its own class. Like many other aspects of R, there are multiple ways to access an individual column. There is the $ operator and also the square brackets.
+
+#Assessing elements like a list
+```{r}
+cncr4[[2]][2]
+```
+```{r}
+tail(cncr)
+```
+
+#data.frames allow us to access individual elements by their position using square brackets, but instead of having one position, two are specified. The first is the row number and the second is the column number.
+```{r}
+cncr4[2,2]
+```
+
+#Assessing using the $ syntax
+```{r}
+#cncr4$yr_operated
+cncr4$yr_operated[2]
+```
+
+To specify more than one row or column, use a vector of indices. Following is the way to access rows 3 and 5, columns 2 through 3.
+```{r}
+cncr4[c(3,5),c(2:3)]
+```
+
+#To access an entire row, specify that row while not specifying any column.
+```{r}
+cncr4[4,]
+```
+
+#Likewise, to access an entire column, specify that column while not specifying any row.
+```{r}
+cncr4[,2]
+```
+
+#The good way to read data from a CSV file is to use read.table. read.csv calls read.table with some arguments preset. The results of using read.table is a data.frame.
+The second argument header , indicates that the first row of the data holds the column names. The third argument gives the delimiter separating the data cells. For example, changing this “ \t ” or “ ; ” allows it to read other types of files.
+One often unknown argument that is helpful to use is stringAsFactors. Setting this to False (the default is True) prevents characters columns being converted into factor columns.
+```{r}
+cncr6 <- read.table(file ="cancer_survival.csv", header = TRUE, sep = ",")
+```
+
+#NOTE - You should never use absolute paths in your scripts, because they hinder sharing.
+
+#Functions to help explore the dataframe
+```{r}
+View(cncr6)      #Views the dataset in the window
+names(cncr6)
+str(cncr6)
+summary(cncr6)
+
+```
+
+#Reading from Excel
+#The package readxl makes reading Excel files, both .xls and .xlsx, easy. The main function is read_excel, which reads the data from a single Excel sheet.
+```{r}
+library(readxl)
+cncr7 <- readxl::read_excel("cancer_survival-xlsx.xlsx")
+#cncr7 <-read_excel("cancer_survival-xlsx.xlsx")
+
+dataEXCEL <- read_excel("cancer_survival-xlsx.xlsx", sheet = 1)
+#dataEXCEL <- read_excel("cancer_survival-xlsx.xlsx", sheet = “sheetname”)
+```
+
+#RStudio cheat sheets ----------
+#https://www.rstudio.com/resources/cheatsheets/
+
+#The two most prominent functions for reading large CSVs — and other text files — are read_delim from the readr package by Hadley Wickham and fread from the data.table package by Matt Dowle respectively. Both are very fast, and neither converts character data to factors automatically.
+
+#Extract data from websites
+#From the rvest package
+See tutorial - https://www.scraperapi.com/blog/web-scraping-with-r/
+
+#Data from other statistical tools
+#From the foreign package:
+read.spss — SPSS, dataSPSS <- read.spss(file.choose(), use.value.labels=FALSE)
+read.dta — Stata, dataStata <- read.dta("xxx.dta")
+read.ssd — SAS, dataSAS <- read.xport("C:/mydata/xxx")
+
+#From the haven package
+read_sas - dataSAS2 <- read_sas("xxx.sas7bdat")
+
+read.octave — Octave
+read.mtp — Minitab
+read.systat — Systat
+
+#See tutorial for reading additional data into R
+https://www.marsja.se/how-to-import-data-reading-sas-files-in-r/#:~:text=Here%E2%80%99s%203%20steps%20to%20open%20SAS%20files%20in,on%20how%20to%20read%20SAS%20files%20in%20R.
+
+#https://www.datafiles.samhsa.gov/get-help/format-specific-issues/how-do-i-read-data-r
+
+https://www.sqlshack.com/import-and-export-data-using-r-and-sql-server/
+
